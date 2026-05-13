@@ -51,6 +51,10 @@ const [editedTitle, setEditedTitle] =
 
 const [editedAmount, setEditedAmount] =
   useState("");
+
+  const [expandedDates, setExpandedDates] =
+  useState<Record<string, boolean>>({});
+
   const [tripName, setTripName] =
   useState(() => {
 
@@ -219,7 +223,7 @@ if (data) {
   const expenseToAdd = {
     ...data[0],
     createdAt: new Date(
-      data[0].created_at
+      data[0].created_at + "Z"
     ),
   };
 
@@ -304,7 +308,7 @@ const saveExpenseEdit = async (
             ...expense,
             ...data[0],
             createdAt: new Date(
-              data[0].created_at
+              data[0].created_at + "Z"
             ),
           };
         }
@@ -413,7 +417,7 @@ if (data) {
 }
 
 setMemberName("");
-setMemberShares("1");
+setMemberShares("");
 };
   
 
@@ -537,6 +541,32 @@ const deleteMember = async (
     (member) => member.balance < 0
   );  
 
+  const groupedExpenses =
+  expenses.reduce(
+    (groups, expense) => {
+
+      const dateKey =
+        expense.createdAt.toLocaleDateString(
+          "en-IN",
+          {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }
+        );
+
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+
+      groups[dateKey].push(expense);
+
+      return groups;
+
+    },
+    {} as Record<string, any[]>
+  );
+  
   const settlements: {
   from: string;
   to: string;
@@ -690,12 +720,17 @@ debtorCopy.forEach((debtor) => {
             }
             className="w-full flex justify-between items-center"
           >
-            <h2 className="text-xl font-semibold">
-              Participants
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-               Total Members: {totalMembers}
-            </p>
+            <div className="text-left">
+
+  <h2 className="text-xl font-semibold">
+    Participants
+  </h2>
+
+  <p className="text-sm text-gray-500">
+    Total Members: {totalMembers}
+  </p>
+
+</div>
 
             <div className="flex items-center gap-3">
 
@@ -1016,138 +1051,202 @@ debtorCopy.forEach((debtor) => {
 
               <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
 
-                {expenses.map((expense) => (
+                {Object.entries(groupedExpenses).map(
+  ([date, expensesForDate]) => {
 
-                  <div
-                    key={`${expense.title}-${expense.id}`}
-                    className="flex justify-between items-start border-b pb-3"
-                  >
+    const totalForDate =
+      expensesForDate.reduce(
+        (sum, expense) =>
+          sum + expense.amount,
+        0
+      );
 
-                    {editingExpense === expense.id ? (
+    const isExpanded =
+      expandedDates[date];
 
-  <div className="w-full space-y-3">
+    return (
 
-   
-          
-
-    <input
-      type="text"
-      value={editedTitle}
-      onChange={(e) =>
-        setEditedTitle(
-          e.target.value
-        )
-      }
-      className="w-full border rounded-xl p-2"
-    />
-
-    <input
-      type="number"
-      value={editedAmount}
-      onChange={(e) =>
-        setEditedAmount(
-          e.target.value
-        )
-      }
-      className="w-full border rounded-xl p-2"
-    />
-
-    <div className="flex gap-2">
-
-      <button
-        onClick={() =>
-          saveExpenseEdit(
-            expense.id
-          )
-        }
-        className="bg-blue-600 text-white px-3 py-2 rounded-lg"
+      <div
+        key={date}
+        className="border rounded-xl overflow-hidden"
       >
-        Save
-      </button>
 
-      <button
-        onClick={
-          cancelExpenseEdit
-        }
-        className="bg-gray-300 px-3 py-2 rounded-lg"
-      >
-        Cancel
-      </button>
-
-    </div>
-
-  </div>
-
-) : (
-
-  <>
-    <div>
-
-  <p className="text-lg font-semibold">
-    ₹{expense.amount.toLocaleString("en-IN")}
-  </p>
-
-  <p className="font-medium">
-    {expense.title}
-  </p>
-
-  <p className="text-xs text-gray-400">
-        {expense.createdAt.toLocaleString(
-          "en-IN",
-          {
-            day: "numeric",
-            month: "short",
-            hour: "numeric",
-            minute: "2-digit",
+        <button
+          onClick={() =>
+            setExpandedDates({
+              ...expandedDates,
+              [date]:
+                !isExpanded,
+            })
           }
+          className="w-full flex justify-between items-center p-3 bg-gray-50"
+        >
+
+          <div className="text-left">
+
+            <p className="font-semibold">
+              {date}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              ₹{totalForDate.toLocaleString(
+                "en-IN"
+              )}
+            </p>
+
+          </div>
+
+          <span className="text-xl">
+            {isExpanded
+              ? "−"
+              : "+"}
+          </span>
+
+        </button>
+
+        {isExpanded && (
+
+          <div className="px-3">
+
+            {expensesForDate.map(
+              (expense) => (
+
+                <div
+                  key={expense.id}
+                  className="flex justify-between items-start border-b py-2"
+                >
+
+                  {editingExpense === expense.id ? (
+
+                    <div className="w-full space-y-3">
+
+                      <input
+                        type="text"
+                        value={editedTitle}
+                        onChange={(e) =>
+                          setEditedTitle(
+                            e.target.value
+                          )
+                        }
+                        className="w-full border rounded-xl p-2"
+                      />
+
+                      <input
+                        type="number"
+                        value={editedAmount}
+                        onChange={(e) =>
+                          setEditedAmount(
+                            e.target.value
+                          )
+                        }
+                        className="w-full border rounded-xl p-2"
+                      />
+
+                      <div className="flex gap-2">
+
+                        <button
+                          onClick={() =>
+                            saveExpenseEdit(
+                              expense.id
+                            )
+                          }
+                          className="bg-blue-600 text-white px-3 py-2 rounded-lg"
+                        >
+                          Save
+                        </button>
+
+                        <button
+                          onClick={
+                            cancelExpenseEdit
+                          }
+                          className="bg-gray-300 px-3 py-2 rounded-lg"
+                        >
+                          Cancel
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  ) : (
+
+                    <>
+                      <div>
+
+                        <p className="text-base font-semibold">
+                          ₹{expense.amount.toLocaleString(
+                            "en-IN"
+                          )}
+                        </p>
+
+                        <p className="text-sm font-medium">
+                          {expense.title}
+                        </p>
+
+                        <p className="text-[11px] text-gray-400">
+                          {expense.createdAt.toLocaleString(
+                            "en-IN",
+                            {
+                              hour: "numeric",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </p>
+
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-1">
+
+                        <button
+                          onClick={() =>
+                            startEditExpense(
+                              expense
+                            )
+                          }
+                          className="text-blue-600"
+                        >
+                          ✏️
+                        </button>
+
+                        <button
+                          onClick={() => {
+
+                            const confirmed =
+                              window.confirm(
+                                "Delete this expense?"
+                              );
+
+                            if (confirmed) {
+                              deleteExpense(
+                                expense.id
+                              );
+                            }
+
+                          }}
+                          className="text-red-500"
+                        >
+                          ✕
+                        </button>
+
+                      </div>
+                    </>
+
+                  )}
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
         )}
-      </p>
 
-    </div>
+      </div>
 
-    <div className="flex items-center gap-3">
-
-      
-
-      <button
-        onClick={() =>
-          startEditExpense(
-            expense
-          )
-        }
-        className="text-blue-600"
-      >
-        ✏️
-      </button>
-
-      <button
-        onClick={() => {
-
-          const confirmed =
-            window.confirm(
-              "Delete this expense?"
-            );
-
-          if (confirmed) {
-            deleteExpense(
-              expense.id
-            );
-          }
-
-        }}
-        className="text-red-500"
-      >
-        ✕
-      </button>
-
-    </div>
-  </>
-
+    );
+  }
 )}
-
-                  </div>
-
-                ))}
 
               </div>
             </>
