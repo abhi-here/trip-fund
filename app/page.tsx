@@ -141,27 +141,36 @@ setIsLoaded(true);
 
 }, []);  
 
-  
-  
-
-
 useEffect(() => {
 
   if (!isLoaded) {
     return;
   }
 
-  localStorage.setItem(
-    "tripEnded",
-    JSON.stringify(
-      tripEnded
-    )
-  );
+  const saveTripSettings =
+    async () => {
+
+      await supabase
+        .from("trip_settings")
+        .update({
+          trip_name: tripName,
+          start_date: tripStartDate,
+          end_date: tripEndDate,
+          trip_ended: tripEnded,
+        })
+        .eq("id", 1);
+    };
+
+  saveTripSettings();
 
 }, [
   isLoaded,
+  tripName,
+  tripStartDate,
+  tripEndDate,
   tripEnded
 ]);
+
 
   const addExpense = async () => {
 
