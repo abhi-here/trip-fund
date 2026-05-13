@@ -1060,7 +1060,10 @@ debtorCopy.forEach((debtor) => {
               <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
 
                 {Object.entries(groupedExpenses).map(
-  ([date, expensesForDate]) => {
+  ([date, expensesForDate]: [
+  string,
+  any[]
+]) => {
 
     const totalForDate =
       expensesForDate.reduce(
