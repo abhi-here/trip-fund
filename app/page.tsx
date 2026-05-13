@@ -113,9 +113,15 @@ const [tripEndDate, setTripEndDate] =
       .select("*");
 
     if (membersData) {
-      setMembers(membersData);
-    }
 
+  setMembers(membersData);
+
+  console.log(membersData);
+
+  alert(
+    JSON.stringify(membersData)
+  );
+}
     if (expensesData) {
 
       const formattedExpenses =
@@ -301,36 +307,57 @@ const cancelExpenseEdit = () => {
   setEditedAmount("");
 };
 
-const addContribution = () => {
+const addContribution = async () => {
 
-    if (
-      !selectedMember ||
-      !contributionAmount
-    ) {
-      return;
-    }
+  if (
+    !selectedMember ||
+    !contributionAmount
+  ) {
+    return;
+  }
 
-    setMembers(
-      members.map((member) => {
-
-        if (
-          member.name === selectedMember
-        ) {
-          return {
-            ...member,
-            deposited:
-              member.deposited +
-              Number(contributionAmount),
-          };
-        }
-
-        return member;
-      })
+  const member =
+    members.find(
+      (m) =>
+        m.name === selectedMember
     );
 
-    setSelectedMember("");
-    setContributionAmount("");
-  };
+  if (!member) {
+    return;
+  }
+
+  const newDeposited =
+    member.deposited +
+    Number(contributionAmount);
+
+  const { data, error } =
+    await supabase
+      .from("members")
+      .update({
+        deposited: newDeposited,
+      })
+      .eq("id", member.id)
+      .select();
+
+  console.log(error);
+
+  if (data) {
+
+    setMembers(
+      members.map((m) => {
+
+        if (m.id === member.id) {
+          return data[0];
+        }
+
+        return m;
+      })
+    );
+  }
+
+  setSelectedMember("");
+  setContributionAmount("");
+};
 
   const addMember = async () => {
 
@@ -675,6 +702,9 @@ debtorCopy.forEach((debtor) => {
               </div>
 
               <div className="space-y-2">
+                <p>
+  {JSON.stringify(members)}
+</p>
 
                 {members.map((member) => (
 
