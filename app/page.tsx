@@ -56,19 +56,7 @@ const [editedAmount, setEditedAmount] =
   useState<Record<string, boolean>>({});
 
   const [tripName, setTripName] =
-  useState(() => {
-
-    if (typeof window !== "undefined") {
-
-      return (
-        localStorage.getItem(
-          "tripName"
-        ) || ""
-      );
-    }
-
-    return "";
-  });
+  useState("");
 
 const [tripStartDate, setTripStartDate] =
   useState(() => {
@@ -258,6 +246,14 @@ const deleteExpense = async (
       )
     );
   }
+  const savedTripName =
+  localStorage.getItem(
+    "tripName"
+  );
+
+if (savedTripName) {
+  setTripName(savedTripName);
+}
 };
 
 
