@@ -62,34 +62,10 @@ const [editedAmount, setEditedAmount] =
   useState(false);
 
 const [tripStartDate, setTripStartDate] =
-  useState(() => {
-
-    if (typeof window !== "undefined") {
-
-      return (
-        localStorage.getItem(
-          "tripStartDate"
-        ) || "2026-05-12"
-      );
-    }
-
-    return "2026-05-12";
-  });
+  useState("2026-05-12");
 
 const [tripEndDate, setTripEndDate] =
-  useState(() => {
-
-    if (typeof window !== "undefined") {
-
-      return (
-        localStorage.getItem(
-          "tripEndDate"
-        ) || "2026-05-22"
-      );
-    }
-
-    return "2026-05-22";
-  });
+  useState("2026-05-12");
 
   useEffect(() => {
 
@@ -106,6 +82,13 @@ const [tripEndDate, setTripEndDate] =
     } = await supabase
       .from("expenses")
       .select("*");
+
+    const {
+  data: tripSettingsData,
+} = await supabase
+  .from("trip_settings")
+  .select("*")
+  .single();  
 
     if (membersData) {
 
@@ -129,49 +112,27 @@ const [tripEndDate, setTripEndDate] =
         formattedExpenses
       );
     }
-   const savedTripName =
-  localStorage.getItem(
-    "tripName"
+    if (tripSettingsData) {
+
+  setTripName(
+    tripSettingsData.trip_name || ""
   );
 
-if (savedTripName) {
-  setTripName(savedTripName);
-}
-
-const savedStartDate =
-  localStorage.getItem(
-    "tripStartDate"
-  );
-
-if (savedStartDate) {
   setTripStartDate(
-    savedStartDate
-  );
-}
-
-const savedEndDate =
-  localStorage.getItem(
-    "tripEndDate"
+    tripSettingsData.start_date ||
+    "2026-05-12"
   );
 
-if (savedEndDate) {
   setTripEndDate(
-    savedEndDate
-  );
-}
-
-const savedTripEnded =
-  localStorage.getItem(
-    "tripEnded"
+    tripSettingsData.end_date ||
+    "2026-05-22"
   );
 
-if (savedTripEnded) {
   setTripEnded(
-    JSON.parse(
-      savedTripEnded
-    )
+    tripSettingsData.trip_ended || false
   );
 }
+   
 
 setIsLoaded(true);
   };
@@ -180,51 +141,10 @@ setIsLoaded(true);
 
 }, []);  
 
-  useEffect(() => {
+  
+  
 
-    localStorage.setItem(
-      "members",
-      JSON.stringify(members)
-    );
 
-  }, [members]);
-
-  useEffect(() => {
-
-    localStorage.setItem(
-      "expenses",
-      JSON.stringify(expenses)
-    );
-
-  }, [expenses]);
-
- useEffect(() => {
-
-  if (!isLoaded) {
-    return;
-  }
-
-  localStorage.setItem(
-    "tripName",
-    tripName
-  );
-
-  localStorage.setItem(
-    "tripStartDate",
-    tripStartDate
-  );
-
-  localStorage.setItem(
-    "tripEndDate",
-    tripEndDate
-  );
-
-}, [
-  isLoaded,
-  tripName,
-  tripStartDate,
-  tripEndDate
-]);
 useEffect(() => {
 
   if (!isLoaded) {
