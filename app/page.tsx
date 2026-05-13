@@ -734,9 +734,7 @@ debtorCopy.forEach((debtor) => {
 
             <div className="flex items-center gap-3">
 
-  <p className="text-sm text-gray-500">
-    {members.length} participants
-  </p>
+  
 
   <span className="text-2xl">
     {showParticipants ? "−" : "+"}
