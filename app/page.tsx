@@ -26,7 +26,7 @@ export default function Home() {
     useState("");
 
   const [memberShares, setMemberShares] =
-    useState("1");
+    useState("");
 
   const [showParticipants, setShowParticipants] =
     useState(true);
@@ -390,7 +390,7 @@ const addContribution = async () => {
 
   const newMember = {
     name: memberName,
-    shares: Number(memberShares),
+    shares: Number(memberShares || 1),
     deposited: 0,
   };
 const {
