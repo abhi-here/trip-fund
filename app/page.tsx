@@ -1395,8 +1395,8 @@ debtorCopy.forEach((debtor) => {
 
     <p className="text-sm font-medium">
       {balance >= 0
-        ? "Ahead"
-        : "Needs"}
+        ? "Extra Paid"
+        : "Pending"}
     </p>
 
     <p className="text-2xl font-bold">
