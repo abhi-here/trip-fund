@@ -44,7 +44,7 @@ export default function Home() {
   useState(false);
 
   const [editingExpense, setEditingExpense] =
-  useState<Date | null>(null);
+  useState<number | null>(null);
 
 const [editedTitle, setEditedTitle] =
   useState("");
@@ -116,11 +116,7 @@ const [tripEndDate, setTripEndDate] =
 
   setMembers(membersData);
 
-  console.log(membersData);
-
-  alert(
-    JSON.stringify(membersData)
-  );
+  
 }
     if (expensesData) {
 
@@ -237,16 +233,27 @@ if (data) {
   setExpenseAmount("");
 };
 
-const deleteExpense = (
-  createdAt: Date
+const deleteExpense = async (
+  id: number
 ) => {
 
-  setExpenses(
-    expenses.filter(
-      (expense) =>
-        expense.createdAt !== createdAt
-    )
-  );
+  const { error } =
+    await supabase
+      .from("expenses")
+      .delete()
+      .eq("id", id);
+
+  console.log(error);
+
+  if (!error) {
+
+    setExpenses(
+      expenses.filter(
+        (expense) =>
+          expense.id !== id
+      )
+    );
+  }
 };
 
 
@@ -256,8 +263,8 @@ const startEditExpense = (
 ) => {
 
   setEditingExpense(
-    expense.createdAt
-  );
+  expense.id
+);
 
   setEditedTitle(
     expense.title
@@ -268,28 +275,44 @@ const startEditExpense = (
   );
 };
 
-const saveExpenseEdit = (
-  createdAt: Date
+const saveExpenseEdit = async (
+  id: number
 ) => {
 
-  setExpenses(
-    expenses.map((expense) => {
+  const { data, error } =
+    await supabase
+      .from("expenses")
+      .update({
+        title: editedTitle,
+        amount: Number(
+          editedAmount
+        ),
+      })
+      .eq("id", id)
+      .select();
 
-      if (
-        expense.createdAt === createdAt
-      ) {
-        return {
-          ...expense,
-          title: editedTitle,
-          amount: Number(
-            editedAmount
-          ),
-        };
-      }
+  console.log(error);
 
-      return expense;
-    })
-  );
+  if (data) {
+
+    setExpenses(
+      expenses.map((expense) => {
+
+        if (expense.id === id) {
+
+          return {
+            ...expense,
+            ...data[0],
+            createdAt: new Date(
+              data[0].created_at
+            ),
+          };
+        }
+
+        return expense;
+      })
+    );
+  }
 
   setEditingExpense(null);
 
@@ -330,9 +353,7 @@ const addContribution = async () => {
     member.deposited +
     Number(contributionAmount);
   
-  console.log("selectedMember", selectedMember);
-console.log("member", member);
-console.log("newDeposited", newDeposited);  
+  
   const { data, error } =
     await supabase
       .from("members")
@@ -341,10 +362,7 @@ console.log("newDeposited", newDeposited);
       })
       .eq("id", member.id)
       .select();
-  console.log("data", data);
-console.log("error", error);    
-
-  console.log(error);
+  
 
   if (data) {
 
@@ -384,8 +402,7 @@ const {
     .insert([newMember])
     .select();
 
-console.log(error);
-console.log(data);
+
 
 if (data) {
 
@@ -400,7 +417,7 @@ setMemberShares("1");
 };
   
 
-const deleteMember = (
+const deleteMember = async (
   memberName: string
 ) => {
 
@@ -432,14 +449,24 @@ const deleteMember = (
     return;
   }
 
-  setMembers(
-    members.filter(
-      (member) =>
-        member.name !== memberName
-    )
-  );
-};
+  const { error } =
+    await supabase
+      .from("members")
+      .delete()
+      .eq("id", member.id);
 
+  console.log(error);
+
+  if (!error) {
+
+    setMembers(
+      members.filter(
+        (m) =>
+          m.id !== member.id
+      )
+    );
+  }
+};
     
 
     
@@ -707,9 +734,7 @@ debtorCopy.forEach((debtor) => {
               </div>
 
               <div className="space-y-2">
-                <p>
-  {JSON.stringify(members)}
-</p>
+                
 
                 {members.map((member) => (
 
@@ -918,11 +943,11 @@ debtorCopy.forEach((debtor) => {
                 {expenses.map((expense) => (
 
                   <div
-                    key={`${expense.title}-${expense.createdAt}`}
+                    key={`${expense.title}-${expense.id}`}
                     className="flex justify-between border-b pb-2"
                   >
 
-                    {editingExpense === expense.createdAt ? (
+                    {editingExpense === expense.id ? (
 
   <div className="w-full space-y-3">
 
@@ -956,7 +981,7 @@ debtorCopy.forEach((debtor) => {
       <button
         onClick={() =>
           saveExpenseEdit(
-            expense.createdAt
+            expense.id
           )
         }
         className="bg-blue-600 text-white px-3 py-2 rounded-lg"
@@ -1025,7 +1050,7 @@ debtorCopy.forEach((debtor) => {
 
           if (confirmed) {
             deleteExpense(
-              expense.createdAt
+              expense.id
             );
           }
 
