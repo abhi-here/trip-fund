@@ -329,7 +329,10 @@ const addContribution = async () => {
   const newDeposited =
     member.deposited +
     Number(contributionAmount);
-
+  
+  console.log("selectedMember", selectedMember);
+console.log("member", member);
+console.log("newDeposited", newDeposited);  
   const { data, error } =
     await supabase
       .from("members")
@@ -338,6 +341,8 @@ const addContribution = async () => {
       })
       .eq("id", member.id)
       .select();
+  console.log("data", data);
+console.log("error", error);    
 
   console.log(error);
 
