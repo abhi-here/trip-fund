@@ -1063,12 +1063,7 @@ debtorCopy.forEach((debtor) => {
   string,
   any[]
 ][]).map(
-  (
-    [date, expensesForDate]: [
-      string,
-      any[]
-    ]
-  ) => {
+  ([date, expensesForDate]) => {
 
     const totalForDate =
       expensesForDate.reduce(
