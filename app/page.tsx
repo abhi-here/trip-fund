@@ -58,6 +58,9 @@ const [editedAmount, setEditedAmount] =
   const [tripName, setTripName] =
   useState("");
 
+  const [isLoaded, setIsLoaded] =
+  useState(false);
+
 const [tripStartDate, setTripStartDate] =
   useState(() => {
 
@@ -127,13 +130,50 @@ const [tripEndDate, setTripEndDate] =
       );
     }
    const savedTripName =
-    localStorage.getItem(
-      "tripName"
-    );
+  localStorage.getItem(
+    "tripName"
+  );
 
-  if (savedTripName) {
-    setTripName(savedTripName);
-  } 
+if (savedTripName) {
+  setTripName(savedTripName);
+}
+
+const savedStartDate =
+  localStorage.getItem(
+    "tripStartDate"
+  );
+
+if (savedStartDate) {
+  setTripStartDate(
+    savedStartDate
+  );
+}
+
+const savedEndDate =
+  localStorage.getItem(
+    "tripEndDate"
+  );
+
+if (savedEndDate) {
+  setTripEndDate(
+    savedEndDate
+  );
+}
+
+const savedTripEnded =
+  localStorage.getItem(
+    "tripEnded"
+  );
+
+if (savedTripEnded) {
+  setTripEnded(
+    JSON.parse(
+      savedTripEnded
+    )
+  );
+}
+
+setIsLoaded(true);
   };
 
   fetchData();
@@ -158,7 +198,11 @@ const [tripEndDate, setTripEndDate] =
 
   }, [expenses]);
 
-  useEffect(() => {
+ useEffect(() => {
+
+  if (!isLoaded) {
+    return;
+  }
 
   localStorage.setItem(
     "tripName",
@@ -176,11 +220,16 @@ const [tripEndDate, setTripEndDate] =
   );
 
 }, [
+  isLoaded,
   tripName,
   tripStartDate,
   tripEndDate
 ]);
 useEffect(() => {
+
+  if (!isLoaded) {
+    return;
+  }
 
   localStorage.setItem(
     "tripEnded",
@@ -189,7 +238,10 @@ useEffect(() => {
     )
   );
 
-}, [tripEnded]);
+}, [
+  isLoaded,
+  tripEnded
+]);
 
   const addExpense = async () => {
 
