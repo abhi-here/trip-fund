@@ -796,28 +796,59 @@ debtorCopy.forEach((debtor) => {
             Fund Summary
           </h2>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
 
-            <p>
-              Total Deposited: ₹
-              {totalDeposited}
-            </p>
+  <div>
+    <p className="text-sm text-gray-500">
+      Total Deposited
+    </p>
 
-            <p>
-              Total Spent: ₹
-              {totalSpent}
-            </p>
+    <p className="text-2xl font-bold">
+      ₹{totalDeposited.toLocaleString("en-IN")}
+    </p>
+  </div>
 
-            <p>
-              Remaining Fund: ₹
-              {remainingFund}
-            </p>
-            <p>
-  Per Head Expense: ₹
-  {perShareExpense.toFixed(0)}
-</p>
+  <div>
+    <p className="text-sm text-gray-500">
+      Total Spent
+    </p>
 
-          </div>
+    <p className="text-2xl font-bold">
+      ₹{totalSpent.toLocaleString("en-IN")}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-500">
+      Remaining Fund
+    </p>
+
+    <p
+      className={`text-2xl font-bold ${
+        remainingFund > 0
+          ? "text-green-600"
+          : "text-red-600"
+      }`}
+    >
+      ₹{remainingFund.toLocaleString("en-IN")}
+    </p>
+  </div>
+
+  <div className="bg-black text-white rounded-2xl p-4">
+
+    <p className="text-sm opacity-80">
+      Per Head Expense
+    </p>
+
+    <p className="text-4xl font-bold mt-1">
+      ₹{perShareExpense
+        .toFixed(0)
+        .toLocaleString()}
+    </p>
+
+  </div>
+
+</div>
 
         </section>
 
