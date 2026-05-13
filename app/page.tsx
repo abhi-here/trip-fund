@@ -126,6 +126,14 @@ const [tripEndDate, setTripEndDate] =
         formattedExpenses
       );
     }
+   const savedTripName =
+    localStorage.getItem(
+      "tripName"
+    );
+
+  if (savedTripName) {
+    setTripName(savedTripName);
+  } 
   };
 
   fetchData();
@@ -246,14 +254,7 @@ const deleteExpense = async (
       )
     );
   }
-  const savedTripName =
-  localStorage.getItem(
-    "tripName"
-  );
-
-if (savedTripName) {
-  setTripName(savedTripName);
-}
+  
 };
 
 
