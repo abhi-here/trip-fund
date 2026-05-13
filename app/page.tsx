@@ -588,7 +588,7 @@ debtorCopy.forEach((debtor) => {
 
       <div className="max-w-md mx-auto space-y-6 text-black">
 
-        <div className="space-y-3">
+        <div className="space-y-3 sticky top-0 z-10 bg-gray-100 pb-3">
 
   <input
     type="text"
@@ -599,7 +599,7 @@ debtorCopy.forEach((debtor) => {
         e.target.value
       )
     }
-    className="w-full text-3xl font-bold bg-transparent outline-none"
+   className="w-full text-3xl font-bold bg-transparent outline-none truncate"
   />
 
   <div className="flex gap-3">
@@ -697,9 +697,17 @@ debtorCopy.forEach((debtor) => {
                Total Members: {totalMembers}
             </p>
 
-            <span className="text-2xl">
-              {showParticipants ? "−" : "+"}
-            </span>
+            <div className="flex items-center gap-3">
+
+  <p className="text-sm text-gray-500">
+    {members.length} participants
+  </p>
+
+  <span className="text-2xl">
+    {showParticipants ? "−" : "+"}
+  </span>
+
+</div>
           </button>
 
           {showParticipants && (
@@ -866,9 +874,17 @@ debtorCopy.forEach((debtor) => {
               Add Contribution
             </h2>
 
-            <span className="text-2xl">
-              {showContributions ? "−" : "+"}
-            </span>
+            <div className="flex items-center gap-3">
+
+  <p className="text-sm text-gray-500">
+    ₹{totalDeposited.toLocaleString("en-IN")}
+  </p>
+
+  <span className="text-2xl">
+    {showContributions ? "−" : "+"}
+  </span>
+
+</div>
           </button>
 
           {showContributions && (
@@ -947,9 +963,17 @@ debtorCopy.forEach((debtor) => {
           </p>
           </div>
 
-            <span className="text-2xl">
-              {showExpenses ? "−" : "+"}
-            </span>
+            <div className="flex items-center gap-3">
+
+  <p className="text-sm text-gray-500">
+    ₹{totalSpent.toLocaleString("en-IN")}
+  </p>
+
+  <span className="text-2xl">
+    {showExpenses ? "−" : "+"}
+  </span>
+
+</div>
           </button>
 
           {showExpenses && (
@@ -1199,9 +1223,17 @@ debtorCopy.forEach((debtor) => {
       Contribution Status
     </h2>
 
-    <span className="text-2xl">
-      {showStatus ? "−" : "+"}
-    </span>
+    <div className="flex items-center gap-3">
+
+  <p className="text-sm text-gray-500">
+    {members.length} people
+  </p>
+
+  <span className="text-2xl">
+    {showStatus ? "−" : "+"}
+  </span>
+
+</div>
 
   </button>
 
