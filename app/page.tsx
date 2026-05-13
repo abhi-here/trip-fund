@@ -937,9 +937,15 @@ debtorCopy.forEach((debtor) => {
             }
             className="w-full flex justify-between items-center"
           >
-            <h2 className="text-xl font-semibold">
-              Expenses
-            </h2>
+            <div>
+          <h2 className="text-xl font-semibold">
+            Expenses
+          </h2>
+
+          <p className="text-sm text-gray-500">
+            {expenses.length} expenses
+          </p>
+          </div>
 
             <span className="text-2xl">
               {showExpenses ? "−" : "+"}
@@ -984,13 +990,13 @@ debtorCopy.forEach((debtor) => {
 
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
 
                 {expenses.map((expense) => (
 
                   <div
                     key={`${expense.title}-${expense.id}`}
-                    className="flex justify-between border-b pb-2"
+                    className="flex justify-between items-start border-b pb-3"
                   >
 
                     {editingExpense === expense.id ? (
@@ -1053,9 +1059,15 @@ debtorCopy.forEach((debtor) => {
   <>
     <div>
 
-      <p>{expense.title}</p>
+  <p className="text-lg font-semibold">
+    ₹{expense.amount.toLocaleString("en-IN")}
+  </p>
 
-      <p className="text-sm text-gray-500">
+  <p className="font-medium">
+    {expense.title}
+  </p>
+
+  <p className="text-xs text-gray-400">
         {expense.createdAt.toLocaleString(
           "en-IN",
           {
@@ -1071,9 +1083,7 @@ debtorCopy.forEach((debtor) => {
 
     <div className="flex items-center gap-3">
 
-      <span>
-        ₹{expense.amount}
-      </span>
+      
 
       <button
         onClick={() =>
