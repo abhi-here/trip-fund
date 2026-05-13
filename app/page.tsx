@@ -29,16 +29,16 @@ export default function Home() {
     useState("");
 
   const [showParticipants, setShowParticipants] =
-    useState(true);
+    useState(false);
 
   const [showContributions, setShowContributions] =
-    useState(true);
+    useState(false);
 
   const [showExpenses, setShowExpenses] =
-    useState(true);
+    useState(false);
 
   const [showStatus, setShowStatus] =
-    useState(true);
+    useState(false);
 
   const [tripEnded, setTripEnded] =
   useState(false);
