@@ -566,6 +566,16 @@ const deleteMember = async (
     },
     {} as Record<string, any[]>
   );
+
+  const todayKey =
+  new Date().toLocaleDateString(
+    "en-IN",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }
+  );
   
   const settlements: {
   from: string;
@@ -866,7 +876,7 @@ debtorCopy.forEach((debtor) => {
 
     <p
       className={`text-2xl font-bold ${
-        remainingFund > 0
+        remainingFund >= 0
           ? "text-green-600"
           : "text-red-600"
       }`}
@@ -1060,7 +1070,8 @@ debtorCopy.forEach((debtor) => {
       );
 
     const isExpanded =
-      expandedDates[date];
+  expandedDates[date] ??
+  date === todayKey;
 
     return (
 
@@ -1323,7 +1334,7 @@ debtorCopy.forEach((debtor) => {
     <div className="flex items-center gap-3">
 
   <p className="text-sm text-gray-500">
-    {members.length} people
+    {totalMembers} people
   </p>
 
   <span className="text-2xl">
