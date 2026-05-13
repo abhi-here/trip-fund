@@ -125,7 +125,7 @@ const [tripEndDate, setTripEndDate] =
           (expense: any) => ({
             ...expense,
             createdAt: new Date(
-              expense.created_at
+              expense.created_at + "Z"
             ),
           })
         );
@@ -1222,37 +1222,78 @@ debtorCopy.forEach((debtor) => {
         return (
 
           <div
-            key={member.name}
-            className="border rounded-xl p-4"
-          >
+  key={member.name}
+  className={`rounded-2xl p-4 border ${
+    balance >= 0
+      ? "bg-green-50 border-green-200"
+      : "bg-red-50 border-red-200"
+  }`}
+>
 
-            <h3 className="font-semibold text-lg">
-              {member.name}
-            </h3>
+            <div className="flex justify-between items-start">
 
-            <p>
-              Expected: ₹
-              {expected.toFixed(0)}
-            </p>
+  <div>
+    <h3 className="font-semibold text-xl">
+      {member.name}
+    </h3>
 
-            <p>
-              Deposited: ₹
-              {member.deposited}
-            </p>
+    <p className="text-sm text-gray-500">
+      Covers {member.shares} people
+    </p>
+  </div>
 
-            <p
-              className={
-                balance >= 0
-                  ? "text-green-600 font-medium"
-                  : "text-red-600 font-medium"
-              }
-            >
-              {balance >= 0
-                ? `Ahead by ₹${balance.toFixed(0)}`
-                : `Needs ₹${Math.abs(
-                    balance
-                  ).toFixed(0)}`}
-            </p>
+  <div
+    className={`text-right ${
+      balance >= 0
+        ? "text-green-700"
+        : "text-red-700"
+    }`}
+  >
+
+    <p className="text-sm font-medium">
+      {balance >= 0
+        ? "Ahead"
+        : "Needs"}
+    </p>
+
+    <p className="text-2xl font-bold">
+      ₹{Math.abs(balance)
+        .toFixed(0)
+        .toLocaleString()}
+    </p>
+
+  </div>
+
+</div>
+
+            <div className="flex justify-between mt-4 text-sm">
+
+  <div>
+    <p className="text-gray-500">
+      Expected
+    </p>
+
+    <p className="font-semibold">
+      ₹{expected
+        .toFixed(0)
+        .toLocaleString()}
+    </p>
+  </div>
+
+  <div className="text-right">
+    <p className="text-gray-500">
+      Paid
+    </p>
+
+    <p className="font-semibold">
+      ₹{member.deposited
+        .toLocaleString("en-IN")}
+    </p>
+  </div>
+
+</div>
+
+            
 
           </div>
 
