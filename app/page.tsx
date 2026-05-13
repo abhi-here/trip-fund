@@ -714,7 +714,7 @@ debtorCopy.forEach((debtor) => {
 
                 <input
                   type="number"
-                  placeholder="People covering"
+                  placeholder="How many people paying for"
                   value={memberShares}
                   onChange={(e) =>
                     setMemberShares(
