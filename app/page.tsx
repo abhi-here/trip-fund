@@ -483,7 +483,11 @@ const deleteMember = async (
 
   const remainingFund =
     totalDeposited - totalSpent;
-
+  const totalMembers = members.reduce(
+  (sum, member) =>
+    sum + member.shares,
+  0
+);
   const totalShares = members.reduce(
     (sum, member) => sum + member.shares,
     0
@@ -689,6 +693,9 @@ debtorCopy.forEach((debtor) => {
             <h2 className="text-xl font-semibold">
               Participants
             </h2>
+            <p className="text-sm text-gray-500 mt-1">
+               Total Members: {totalMembers}
+            </p>
 
             <span className="text-2xl">
               {showParticipants ? "−" : "+"}
@@ -698,40 +705,7 @@ debtorCopy.forEach((debtor) => {
           {showParticipants && (
 
             <>
-              <div className="space-y-3 mb-6 mt-4">
-
-                <input
-                  type="text"
-                  placeholder="Participant Name"
-                  value={memberName}
-                  onChange={(e) =>
-                    setMemberName(
-                      e.target.value
-                    )
-                  }
-                  className="w-full border rounded-xl p-3"
-                />
-
-                <input
-                  type="number"
-                  placeholder="How many people paying for"
-                  value={memberShares}
-                  onChange={(e) =>
-                    setMemberShares(
-                      e.target.value
-                    )
-                  }
-                  className="w-full border rounded-xl p-3"
-                />
-
-                <button
-                  onClick={addMember}
-                  className="w-full bg-blue-600 text-white rounded-xl p-3 font-medium"
-                >
-                  Add Participant
-                </button>
-
-              </div>
+              
 
               <div className="space-y-2">
                 
@@ -769,6 +743,47 @@ debtorCopy.forEach((debtor) => {
                 ))}
 
               </div>
+
+            <div className="space-y-3 mt-6">
+
+
+               <input
+                 type="text"
+                 placeholder="Participant Name"
+                 value={memberName}
+                 onChange={(e) =>
+                   setMemberName(
+                     e.target.value
+                   )
+                 }
+                 className="w-full border rounded-xl p-3"
+               />
+
+
+               <input
+                 type="number"
+                 placeholder="How many people paying for"
+                 value={memberShares}
+                 onChange={(e) =>
+                   setMemberShares(
+                     e.target.value
+                   )
+                 }
+                 className="w-full border rounded-xl p-3"
+               />
+
+
+               <button
+                 onClick={addMember}
+                 className="w-full bg-blue-600 text-white rounded-xl p-3 font-medium"
+               >
+                 Add Participant
+               </button>
+
+
+             </div>
+
+  
             </>
 
           )}
